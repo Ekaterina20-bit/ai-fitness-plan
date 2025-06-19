@@ -165,9 +165,10 @@
       </ul>
     </div>
     <form class="reg-form" id="regForm" autocomplete="off">
-      <label class="reg-label" for="phone">Куда прислать твой план?</label>
-      <input class="reg-input" type="tel" id="phone" name="phone" value="+7" required maxlength="12" autocomplete="off">
-      <div class="reg-warning">⚠️ Внимание: программа сохраняется в течение 15 минут</div>
+      <label class="reg-label" for="email">Куда прислать твою AI-программу?</label>
+      <div class="subtitle" style="margin-bottom: 16px; margin-top: -8px; font-size: 1rem; color: #a259c6;">Укажи e-mail, и мы покажем тебе твой рацион и план тренировок</div>
+      <input class="reg-input" type="email" id="email" name="email" placeholder="example@gmail.com" value="" required autocomplete="off">
+      <div class="reg-warning" id="regWarning" style="display:none"></div>
       <button class="reg-btn" type="submit">Получить мою программу</button>
       <div class="reg-note">Никакого спама. Только доступ к твоей персональной программе.</div>
     </form>
@@ -206,11 +207,20 @@
     });
     document.getElementById('regForm').onsubmit = function(e) {
       e.preventDefault();
-      if (phoneInput.value.length !== 12) {
-        phoneInput.focus();
-        phoneInput.style.border = '1.5px solid #d72660';
+      var emailInput = document.getElementById('email');
+      var warning = document.getElementById('regWarning');
+      var email = emailInput.value.trim();
+      // Простая валидация e-mail
+      var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!email || !valid) {
+        warning.textContent = 'Пожалуйста, введите корректный e-mail';
+        warning.style.display = 'block';
+        emailInput.focus();
+        emailInput.style.border = '1.5px solid #d72660';
         return;
       }
+      warning.style.display = 'none';
+      emailInput.style.border = '';
       window.location.href = 'paywall.html';
     };
   </script>
