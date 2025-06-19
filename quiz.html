@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Квиз: Подбор плана похудения</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffe0f0 0%, #f3e6ff 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .quiz-card {
+      background: #fff;
+      border-radius: 28px;
+      box-shadow: 0 8px 32px 0 rgba(180, 120, 200, 0.10), 0 1.5px 8px 0 rgba(255, 120, 180, 0.08);
+      padding: 36px 24px 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 340px;
+      margin: 24px 0;
+    }
+    .quiz-step {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.4s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: none; }
+    }
+    .quiz-question {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #d72660;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+    .quiz-options {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .quiz-option {
+      background: #ffe0f0;
+      color: #a259c6;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      padding: 13px 0;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, border 0.18s;
+      outline: none;
+    }
+    .quiz-option.selected, .quiz-option:active {
+      background: #a259c6;
+      color: #fff;
+      border: 2px solid #d72660;
+    }
+    .quiz-option:hover {
+      background: #f3e6ff;
+      color: #d72660;
+    }
+    .quiz-input {
+      width: 100%;
+      padding: 13px 12px;
+      border-radius: 14px;
+      border: 1.5px solid #f3e6ff;
+      font-size: 1.08rem;
+      margin-bottom: 28px;
+      color: #a259c6;
+      background: #fff;
+      outline: none;
+      transition: border 0.18s;
+    }
+    .quiz-input:focus {
+      border: 1.5px solid #a259c6;
+    }
+    .quiz-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #ff7eb3 0%, #a259c6 100%);
+      color: #fff;
+      font-size: 1.18rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 0;
+      margin-top: 8px;
+      box-shadow: 0 4px 16px 0 rgba(210, 100, 180, 0.13);
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .quiz-btn:hover, .quiz-btn:focus {
+      background: linear-gradient(90deg, #d72660 0%, #a259c6 100%);
+      box-shadow: 0 6px 24px 0 rgba(210, 100, 180, 0.18);
+    }
+    .quiz-progress {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      justify-content: center;
+    }
+    .quiz-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f3e6ff;
+      transition: background 0.2s;
+    }
+    .quiz-dot.active {
+      background: #d72660;
+    }
+    @media (max-width: 500px) {
+      .quiz-card {
+        padding: 18px 2vw 18px 2vw;
+        border-radius: 16px;
+        min-height: 260px;
+      }
+      .quiz-question {
+        font-size: 1.05rem;
+      }
+      .quiz-btn {
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-card">
+    <div class="quiz-progress" id="quizProgress"></div>
+    <form id="quizForm" autocomplete="off">
+      <!-- Steps will be rendered here -->
+    </form>
+  </div>
+  <script>
+    const steps = [
+      {
+        q: 'Твой возраст?',
+        type: 'options',
+        options: ['до 25', '25–30', '31–40', '40+']
+      },
+      {
+        q: 'Текущий вес?',
+        type: 'input',
+        placeholder: 'кг',
+        inputmode: 'numeric',
+      },
+      {
+        q: 'Желаемый вес?',
+        type: 'input',
+        placeholder: 'кг',
+        inputmode: 'numeric',
+      },
+      {
+        q: 'Рост?',
+        type: 'input',
+        placeholder: 'см',
+        inputmode: 'numeric',
+      },
+      {
+        q: 'Насколько ты активна в течение дня?',
+        type: 'options',
+        options: ['Мало двигаюсь', 'Умеренно', 'Очень активна']
+      },
+      {
+        q: 'Что хочешь получить?',
+        type: 'options',
+        options: ['Рацион', 'Упражнения', 'Психо-поддержка', 'Всё сразу']
+      },
+      {
+        q: 'Где удобнее тренироваться?',
+        type: 'options',
+        options: ['Дома', 'В зале', 'На улице', 'Не хочу тренировки']
+      },
+      {
+        q: 'Хочешь напоминания и трекер?',
+        type: 'options',
+        options: ['Да', 'Нет']
+      },
+      {
+        q: 'Что тебе мешает похудеть?',
+        type: 'options',
+        options: ['Срывы', 'Лень', 'Нет времени', 'Ничего, просто нужна система']
+      },
+      {
+        q: 'Хочешь видеть свой прогресс каждую неделю?',
+        type: 'options',
+        options: ['Да!', 'Не обязательно']
+      }
+    ];
+
+    let currentStep = 0;
+    const answers = [];
+    const quizForm = document.getElementById('quizForm');
+    const quizProgress = document.getElementById('quizProgress');
+
+    function renderProgress() {
+      quizProgress.innerHTML = '';
+      for (let i = 0; i < steps.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'quiz-dot' + (i === currentStep ? ' active' : '');
+        quizProgress.appendChild(dot);
+      }
+    }
+
+    function renderStep() {
+      renderProgress();
+      quizForm.innerHTML = '';
+      const step = steps[currentStep];
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'quiz-step';
+      // Вопрос
+      const q = document.createElement('div');
+      q.className = 'quiz-question';
+      q.textContent = step.q;
+      stepDiv.appendChild(q);
+      // Варианты или инпут
+      if (step.type === 'options') {
+        const opts = document.createElement('div');
+        opts.className = 'quiz-options';
+        step.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'quiz-option';
+          btn.textContent = opt;
+          btn.onclick = () => {
+            Array.from(opts.children).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            answers[currentStep] = opt;
+            nextBtn.disabled = false;
+          };
+          opts.appendChild(btn);
+        });
+        stepDiv.appendChild(opts);
+      } else if (step.type === 'input') {
+        const input = document.createElement('input');
+        input.className = 'quiz-input';
+        input.type = 'text';
+        input.placeholder = step.placeholder || '';
+        input.inputMode = step.inputmode || 'text';
+        input.value = answers[currentStep] || '';
+        input.oninput = () => {
+          answers[currentStep] = input.value.trim();
+          nextBtn.disabled = !input.value.trim();
+        };
+        stepDiv.appendChild(input);
+      }
+      // Кнопка далее/завершить
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'quiz-btn';
+      nextBtn.textContent = currentStep === steps.length - 1 ? 'Получить мой план' : 'Далее';
+      nextBtn.disabled = answers[currentStep] ? false : true;
+      nextBtn.onclick = () => {
+        if (step.type === 'input' && !answers[currentStep]) return;
+        if (currentStep < steps.length - 1) {
+          currentStep++;
+          renderStep();
+        } else {
+          window.location.href = 'register.html';
+        }
+      };
+      stepDiv.appendChild(nextBtn);
+      quizForm.appendChild(stepDiv);
+      // Восстановить выбранное
+      if (step.type === 'options' && answers[currentStep]) {
+        const opts = stepDiv.querySelectorAll('.quiz-option');
+        opts.forEach(btn => {
+          if (btn.textContent === answers[currentStep]) btn.classList.add('selected');
+        });
+        nextBtn.disabled = false;
+      }
+      if (step.type === 'input' && answers[currentStep]) {
+        stepDiv.querySelector('.quiz-input').value = answers[currentStep];
+        nextBtn.disabled = false;
+      }
+    }
+
+    renderStep();
+  </script>
+</body>
+</html>

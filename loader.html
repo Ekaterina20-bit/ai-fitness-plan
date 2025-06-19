@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI подбирает твою персональную программу похудения...</title>
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #ffe0f0 0%, #f3e6ff 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+      color: #a259c6;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 18px 28px 18px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 8px 32px 0 rgba(180, 120, 200, 0.10), 0 1.5px 8px 0 rgba(255, 120, 180, 0.08);
+      max-width: 400px;
+    }
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #d72660;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 1.08rem;
+      color: #a259c6;
+      font-weight: 500;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .loader {
+      width: 70px;
+      height: 70px;
+      border: 7px solid #f3e6ff;
+      border-top: 7px solid #d72660;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 32px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .phrases {
+      margin-top: 0;
+      min-height: 32px;
+      font-size: 1.08rem;
+      color: #a259c6;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: 0;
+    }
+    @media (max-width: 500px) {
+      .container {
+        padding: 18px 2vw 18px 2vw;
+        border-radius: 16px;
+        max-width: 98vw;
+      }
+      h1 {
+        font-size: 1.05rem;
+      }
+      .subtitle, .phrases {
+        font-size: 0.98rem;
+      }
+      .loader {
+        width: 48px;
+        height: 48px;
+        border-width: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI подбирает твою персональную программу похудения...</h1>
+    <div class="subtitle">Анализ параметров, подбор рациона, тренировок и рекомендаций</div>
+    <div class="loader"></div>
+    <div class="phrases" id="aiPhrases"></div>
+  </div>
+  <script>
+    const phrases = [
+      'Анализируем уровень активности...',
+      'Определяем подходящий рацион...',
+      'Подбираем мотивационные триггеры...',
+      'Генерируем план тренировок...'
+    ];
+    let idx = 0;
+    const phraseEl = document.getElementById('aiPhrases');
+    function showPhrase() {
+      phraseEl.textContent = phrases[idx % phrases.length];
+      idx++;
+    }
+    showPhrase();
+    const phraseInterval = setInterval(showPhrase, 1400);
+    setTimeout(() => {
+      clearInterval(phraseInterval);
+      window.location.href = 'register.html';
+    }, 6000);
+  </script>
+</body>
+</html> 

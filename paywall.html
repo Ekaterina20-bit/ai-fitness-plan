@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Твоя AI-программа почти готова</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: linear-gradient(135deg, #ffe0f0 0%, #e0c3fc 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 720px;
+      width: 100%;
+      margin: 32px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 12px;
+      box-sizing: border-box;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #d72660;
+      margin-bottom: 24px;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      max-width: 400px;
+      height: 10px;
+      background: #f3e6ff;
+      border-radius: 6px;
+      margin: 0 auto 28px auto;
+      overflow: hidden;
+      box-shadow: 0 2px 8px 0 rgba(180, 120, 200, 0.10);
+    }
+    .progress-bar-fill {
+      width: 80%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff7eb3, #a259c6);
+      border-radius: 6px;
+      transition: width 0.6s cubic-bezier(.4,2,.6,1);
+    }
+    .card, .locked-card {
+      width: 100%;
+      max-width: 680px;
+      border-radius: 22px;
+      padding: 36px 36px 28px 36px;
+      margin-bottom: 24px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 6px 32px 0 rgba(180, 120, 200, 0.13);
+      background: #fff0f7;
+      transition: box-shadow 0.3s, transform 0.3s;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .card:hover, .locked-card:hover {
+      box-shadow: 0 12px 40px 0 rgba(180, 120, 200, 0.18);
+      transform: translateY(-2px) scale(1.01);
+    }
+    .card-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #d72660;
+      margin-bottom: 18px;
+      text-align: center;
+      width: 100%;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .plan-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+      color: #b13e7c;
+      font-size: 1.08rem;
+      font-weight: 600;
+      width: 100%;
+    }
+    .plan-list li {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      line-height: 1.6;
+      font-size: 1.08rem;
+      word-break: break-word;
+    }
+    .plan-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .plan-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .plan-title {
+      font-weight: 700;
+      color: #d72660;
+      font-size: 1.08rem;
+      margin-bottom: 2px;
+    }
+    .plan-desc {
+      color: #a259c6;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+    .plan-benefit {
+      color: #b13e7c;
+      font-size: 0.98rem;
+      margin-bottom: 0;
+    }
+    .locked-card {
+      background: #f3e6ff;
+      position: relative;
+      opacity: 0.93;
+      margin-bottom: 36px;
+      border: 2px solid #e3d0f7;
+      min-height: 180px;
+      justify-content: center;
+      box-shadow: 0 6px 32px 0 rgba(180, 120, 200, 0.10);
+      max-width: 680px;
+      width: 100%;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+    .locked-overlay {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      background: rgba(255,255,255,0.65);
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #a259c6;
+      font-size: 1.13rem;
+      font-weight: 700;
+      z-index: 2;
+      text-align: center;
+      padding: 32px 24px 24px 24px;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .locked-overlay .locked-title {
+      font-size: 1.13rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #a259c6;
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+    .locked-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: #a259c6;
+      font-size: 1.03rem;
+      font-weight: 600;
+      text-align: left;
+      width: 100%;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .locked-list li {
+      margin-bottom: 10px;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 1.03rem;
+      word-break: break-word;
+    }
+    .paywall-pay {
+      background: #fff;
+      border-radius: 18px;
+      padding: 22px 18px 16px 18px;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-sizing: border-box;
+      margin-bottom: 0;
+      box-shadow: 0 2px 8px 0 rgba(210, 100, 180, 0.07);
+    }
+    .paywall-price {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #d72660;
+      margin-bottom: 10px;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .paywall-btn {
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(90deg, #ff7eb3 0%, #a259c6 100%);
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 999px;
+      padding: 19px 0;
+      margin-top: 18px;
+      margin-bottom: 0;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.01em;
+      text-align: center;
+      display: block;
+      animation: pulse 1.5s infinite;
+    }
+    .paywall-btn:hover, .paywall-btn:focus {
+      background: linear-gradient(90deg, #d72660 0%, #a259c6 100%);
+      transform: scale(1.04);
+      box-shadow: 0 8px 32px 0 rgba(210, 100, 180, 0.18);
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 #ff7eb366; }
+      70% { box-shadow: 0 0 0 12px #ff7eb300; }
+      100% { box-shadow: 0 0 0 0 #ff7eb300; }
+    }
+    .paywall-note {
+      color: #a259c6;
+      font-size: 1.01rem;
+      margin-top: 10px;
+      text-align: center;
+      opacity: 0.85;
+    }
+    /* Иконки для заблокированных секций */
+    .locked-list li:nth-child(1)::before { content: '🍽️ '; }
+    .locked-list li:nth-child(2)::before { content: '🤸‍♀️ '; }
+    .locked-list li:nth-child(3)::before { content: '🧠 '; }
+    .locked-list li:nth-child(4)::before { content: '📈 '; }
+    .locked-list li:nth-child(5)::before { content: '🔑 '; }
+    @media (max-width: 900px) {
+      .container {
+        max-width: 99vw;
+      }
+      .card, .locked-card {
+        max-width: 99vw;
+        padding: 24px 8vw 18px 8vw;
+      }
+      .locked-overlay {
+        padding: 24px 8vw 18px 8vw;
+      }
+    }
+    @media (max-width: 650px) {
+      .container {
+        padding: 0 2vw;
+        max-width: 99vw;
+      }
+      .card, .locked-card, .paywall-pay {
+        padding: 14px 2vw 12px 2vw;
+        border-radius: 14px;
+        max-width: 99vw;
+      }
+      .title {
+        font-size: 1.08rem;
+      }
+      .plan-list li, .locked-list li {
+        font-size: 0.97rem;
+      }
+      .paywall-btn {
+        font-size: 1.05rem;
+        padding: 13px 0;
+      }
+      .locked-overlay {
+        padding: 14px 2vw 12px 2vw;
+        border-radius: 14px;
+        font-size: 0.98rem;
+      }
+      .locked-list {
+        font-size: 0.97rem;
+        max-width: 99vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Твоя AI-программа почти готова</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill"></div></div>
+    <div class="card">
+      <div class="card-header">🔥 Твой мини-план на сегодня (AI-фрагмент)</div>
+      <ul class="plan-list">
+        <li>
+          <span class="plan-icon">🍓</span>
+          <div class="plan-content">
+            <div class="plan-title">Завтрак: <span style="font-weight:400;color:#a259c6">Сжигающий жир микс</span></div>
+            <div class="plan-desc">овсянка на воде + горсть ягод + 1/2 банана</div>
+            <div class="plan-benefit">— сохраняет сытость до обеда, без скачков сахара</div>
+          </div>
+        </li>
+        <li>
+          <span class="plan-icon">🥗</span>
+          <div class="plan-content">
+            <div class="plan-title">Обед: <span style="font-weight:400;color:#a259c6">Формула впитывания жира</span></div>
+            <div class="plan-desc">запечённая куриная грудка + киноа + салат с лимонным соком</div>
+            <div class="plan-benefit">— ускоряет метаболизм на 17%</div>
+          </div>
+        </li>
+        <li>
+          <span class="plan-icon">🐟</span>
+          <div class="plan-content">
+            <div class="plan-title">Ужин: <span style="font-weight:400;color:#a259c6">Меню против вечернего срыва</span></div>
+            <div class="plan-desc">рыба, тушённая с брокколи и специями</div>
+            <div class="plan-benefit">— снижает тягу к сладкому на 62%</div>
+          </div>
+        </li>
+        <li>
+          <span class="plan-icon">💪</span>
+          <div class="plan-content">
+            <div class="plan-title">Упражнение: <span style="font-weight:400;color:#a259c6">Жиротопка за 10 минут</span></div>
+            <div class="plan-desc">программа, которую можно делать в пижаме</div>
+          </div>
+        </li>
+        <li>
+          <span class="plan-icon">💬</span>
+          <div class="plan-content">
+            <div class="plan-title">Совет от AI</div>
+            <div class="plan-desc">Самое опасное — срыв после старта. Сегодня твоя задача — не идеально, а стабильно.</div>
+            <div class="plan-benefit">Ты не обязана страдать, чтобы увидеть первые минус 1,5 кг.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="locked-card">
+      <div class="locked-overlay">
+        <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+          <div class="locked-title" style="margin-bottom: 18px;">🔒 Чтобы продолжить, разблокируй программу:</div>
+          <ul class="locked-list" style="margin-top: 0;">
+            <li>Твой рацион на 7 дней</li>
+            <li>Персональные тренировки от AI</li>
+            <li>Психо-хитрости от срывов</li>
+            <li>Дневник прогресса и напоминания</li>
+            <li>"Секретная кнопка контроля веса" (эксклюзив)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="paywall-pay">
+      <div class="paywall-price">Доступ на 3 дня — всего за 199₽</div>
+      <button class="paywall-btn" id="payBtn">Открыть полный доступ</button>
+      <div class="paywall-note">Без подписок. Только персональный план.</div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('payBtn').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'error.html';
+    };
+  </script>
+</body>
+</html>
