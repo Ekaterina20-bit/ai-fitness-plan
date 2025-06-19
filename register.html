@@ -191,37 +191,6 @@
     </form>
   </div>
   <script>
-    const phoneInput = document.getElementById('phone');
-    phoneInput.addEventListener('keydown', function(e) {
-      // Разрешаем навигацию, копипасту, стрелки, delete, backspace после +7
-      const allowedKeys = [8, 9, 13, 37, 38, 39, 40, 46];
-      if (
-        allowedKeys.includes(e.keyCode) ||
-        (e.ctrlKey && (e.key === 'a' || e.key === 'c' || e.key === 'v' || e.key === 'x'))
-      ) return;
-      // Не даём удалить +7
-      if ((this.selectionStart <= 2 && (e.keyCode === 8 || e.keyCode === 46)) ||
-          (this.selectionStart < 2 && e.key.length === 1)) {
-        e.preventDefault();
-        this.setSelectionRange(2, 2);
-        return;
-      }
-      // Только цифры после +7
-      if (this.selectionStart >= 2 && !/\d/.test(e.key) && e.key.length === 1) {
-        e.preventDefault();
-      }
-      // Не больше 12 символов
-      if (this.value.length >= 12 && this.selectionStart === this.selectionEnd && e.key.length === 1 && this.selectionStart >= this.value.length) {
-        e.preventDefault();
-      }
-    });
-    phoneInput.addEventListener('input', function(e) {
-      // Удаляем всё, кроме +7 и 10 цифр
-      let val = this.value;
-      if (!val.startsWith('+7')) val = '+7' + val.replace(/[^\d]/g, '');
-      val = '+7' + val.slice(2).replace(/[^\d]/g, '').slice(0, 10);
-      this.value = val;
-    });
     document.getElementById('regForm').onsubmit = function(e) {
       e.preventDefault();
       var emailInput = document.getElementById('email');
